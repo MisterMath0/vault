@@ -10,9 +10,14 @@ Example:
     # Initialize Vault
     vault = await Vault.create()
 
-    # Coming in Phase 2+:
-    # user = await vault.users.create(email="user@example.com")
-    # org = await vault.orgs.create(name="Acme Corp")
+    # User management
+    user = await vault.users.create(email="user@example.com", password="secure123")
+
+    # Organization management
+    org = await vault.orgs.create(name="Acme Corp", slug="acme-corp")
+
+    # Add user to organization
+    membership = await vault.memberships.create(user.id, org.id)
     ```
 """
 
