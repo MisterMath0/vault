@@ -8,6 +8,7 @@ from typing import Optional
 
 from .auth import SessionManager, UserManager
 from .config import VaultConfig, load_config
+from .organizations import MembershipManager, OrganizationManager
 from .utils.supabase import VaultSupabaseClient
 
 
@@ -33,7 +34,7 @@ class Vault:
 
         # Use Vault features
         user = await vault.users.create(email="user@example.com", password="secure123")
-        # org = await vault.orgs.create(name="Acme Corp")  # Phase 3
+        org = await vault.orgs.create(name="Acme Corp", slug="acme-corp")
         ```
     """
 
@@ -55,8 +56,11 @@ class Vault:
         self.users = UserManager(self)
         self.sessions = SessionManager(self)
 
+        # Phase 3: Organizations and memberships
+        self.orgs = OrganizationManager(self)
+        self.memberships = MembershipManager(self)
+
         # These will be implemented in later phases:
-        # self.orgs = OrganizationManager(self)
         # self.roles = RoleManager(self)
         # self.invites = InvitationManager(self)
 
