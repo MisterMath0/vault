@@ -6,6 +6,7 @@ This is the primary interface users interact with.
 
 from typing import Optional
 
+from .auth import SessionManager, UserManager
 from .config import VaultConfig, load_config
 from .utils.supabase import VaultSupabaseClient
 
@@ -30,9 +31,9 @@ class Vault:
             supabase_key="your-service-key"
         )
 
-        # Use Vault features (coming in Phase 2+)
-        # user = await vault.users.create(email="user@example.com")
-        # org = await vault.orgs.create(name="Acme Corp")
+        # Use Vault features
+        user = await vault.users.create(email="user@example.com", password="secure123")
+        # org = await vault.orgs.create(name="Acme Corp")  # Phase 3
         ```
     """
 
@@ -50,8 +51,11 @@ class Vault:
         self.config = config
         self.client = client
 
+        # Phase 2: User management and sessions
+        self.users = UserManager(self)
+        self.sessions = SessionManager(self)
+
         # These will be implemented in later phases:
-        # self.users = UserManager(self)
         # self.orgs = OrganizationManager(self)
         # self.roles = RoleManager(self)
         # self.invites = InvitationManager(self)
