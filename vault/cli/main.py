@@ -5,12 +5,13 @@ Usage:
     vault init              Initialize Vault in your project
     vault migrate           Run database migrations
     vault status            Show migration status
+    vault users             Manage users
 """
 
 import typer
 from rich.console import Console
 
-from .commands import init, migrate
+from .commands import init, migrate, users
 
 # Create the main Typer app
 app = typer.Typer(
@@ -22,10 +23,18 @@ app = typer.Typer(
 # Create a Rich console for pretty output
 console = Console()
 
-# Register commands
+# Register top-level commands
 app.command(name="init")(init.init_command)
 app.command(name="migrate")(migrate.migrate_command)
 app.command(name="status")(migrate.status_command)
+
+# Create users subcommand group
+users_app = typer.Typer(help="Manage users")
+users_app.command(name="create")(users.users_create_command)
+users_app.command(name="list")(users.users_list_command)
+users_app.command(name="get")(users.users_get_command)
+users_app.command(name="delete")(users.users_delete_command)
+app.add_typer(users_app, name="users")
 
 
 @app.callback()
