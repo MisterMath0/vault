@@ -6,12 +6,13 @@ Usage:
     vault migrate           Run database migrations
     vault status            Show migration status
     vault users             Manage users
+    vault orgs              Manage organizations
 """
 
 import typer
 from rich.console import Console
 
-from .commands import init, migrate, users
+from .commands import init, migrate, orgs, users
 
 # Create the main Typer app
 app = typer.Typer(
@@ -35,6 +36,16 @@ users_app.command(name="list")(users.users_list_command)
 users_app.command(name="get")(users.users_get_command)
 users_app.command(name="delete")(users.users_delete_command)
 app.add_typer(users_app, name="users")
+
+# Create orgs subcommand group
+orgs_app = typer.Typer(help="Manage organizations")
+orgs_app.command(name="create")(orgs.orgs_create_command)
+orgs_app.command(name="list")(orgs.orgs_list_command)
+orgs_app.command(name="get")(orgs.orgs_get_command)
+orgs_app.command(name="members")(orgs.orgs_members_command)
+orgs_app.command(name="add-member")(orgs.orgs_add_member_command)
+orgs_app.command(name="remove-member")(orgs.orgs_remove_member_command)
+app.add_typer(orgs_app, name="orgs")
 
 
 @app.callback()
