@@ -6,11 +6,15 @@ This is the primary interface users interact with.
 
 from typing import Optional
 
+from .apikeys import APIKeyManager
+from .audit import AuditLogger
 from .auth import SessionManager, UserManager
 from .config import VaultConfig, load_config
+from .invitations import InvitationManager
 from .organizations import MembershipManager, OrganizationManager
 from .rbac import PermissionManager, RoleManager
 from .utils.supabase import VaultSupabaseClient
+from .webhooks import WebhookManager
 
 
 class Vault:
@@ -73,8 +77,11 @@ class Vault:
         self.roles = RoleManager(self)
         self.permissions = PermissionManager(self)
 
-        # These will be implemented in later phases:
-        # self.invites = InvitationManager(self)
+        # Phase 5: Advanced features
+        self.invites = InvitationManager(self)
+        self.audit = AuditLogger(self)
+        self.webhooks = WebhookManager(self)
+        self.api_keys = APIKeyManager(self)
 
     @classmethod
     async def create(
@@ -145,6 +152,9 @@ class Vault:
                 await vault.close()
             ```
         """
+        # Close webhook HTTP client
+        await self.webhooks.close()
+        # Close Supabase client
         await self.client.close()
 
     async def __aenter__(self) -> "Vault":

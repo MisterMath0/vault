@@ -8,12 +8,14 @@ Usage:
     vault users             Manage users
     vault orgs              Manage organizations
     vault roles             Manage roles and permissions
+    vault invites           Manage organization invitations
+    vault api-keys          Manage API keys
 """
 
 import typer
 from rich.console import Console
 
-from .commands import init, migrate, orgs, roles, users
+from .commands import apikeys, init, invites, migrate, orgs, roles, users
 
 # Create the main Typer app
 app = typer.Typer(
@@ -60,6 +62,12 @@ roles_app.command(name="remove-permission")(roles.roles_remove_permission_comman
 roles_app.command(name="init-system")(roles.roles_init_system_command)
 roles_app.command(name="assign")(roles.roles_assign_command)
 app.add_typer(roles_app, name="roles")
+
+# Add invites subcommand group
+app.add_typer(invites.app, name="invites")
+
+# Add api-keys subcommand group
+app.add_typer(apikeys.app, name="api-keys")
 
 
 @app.callback()
