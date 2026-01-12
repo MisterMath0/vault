@@ -9,6 +9,7 @@ from typing import Optional
 from .auth import SessionManager, UserManager
 from .config import VaultConfig, load_config
 from .organizations import MembershipManager, OrganizationManager
+from .rbac import PermissionManager, RoleManager
 from .utils.supabase import VaultSupabaseClient
 
 
@@ -35,6 +36,14 @@ class Vault:
         # Use Vault features
         user = await vault.users.create(email="user@example.com", password="secure123")
         org = await vault.orgs.create(name="Acme Corp", slug="acme-corp")
+
+        # RBAC features
+        role = await vault.roles.create(
+            organization_id=org.id,
+            name="Editor",
+            permissions=["posts:read", "posts:write"]
+        )
+        can_write = await vault.permissions.check(user.id, org.id, "posts:write")
         ```
     """
 
@@ -60,8 +69,11 @@ class Vault:
         self.orgs = OrganizationManager(self)
         self.memberships = MembershipManager(self)
 
+        # Phase 4: RBAC - roles and permissions
+        self.roles = RoleManager(self)
+        self.permissions = PermissionManager(self)
+
         # These will be implemented in later phases:
-        # self.roles = RoleManager(self)
         # self.invites = InvitationManager(self)
 
     @classmethod
