@@ -370,7 +370,7 @@ Vault creates these tables in your database:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/vault
+git clone https://github.com/MisterMath0/vault
 cd vault
 
 # Create virtual environment
