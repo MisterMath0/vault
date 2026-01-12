@@ -7,12 +7,13 @@ Usage:
     vault status            Show migration status
     vault users             Manage users
     vault orgs              Manage organizations
+    vault roles             Manage roles and permissions
 """
 
 import typer
 from rich.console import Console
 
-from .commands import init, migrate, orgs, users
+from .commands import init, migrate, orgs, roles, users
 
 # Create the main Typer app
 app = typer.Typer(
@@ -46,6 +47,19 @@ orgs_app.command(name="members")(orgs.orgs_members_command)
 orgs_app.command(name="add-member")(orgs.orgs_add_member_command)
 orgs_app.command(name="remove-member")(orgs.orgs_remove_member_command)
 app.add_typer(orgs_app, name="orgs")
+
+# Create roles subcommand group
+roles_app = typer.Typer(help="Manage roles and permissions")
+roles_app.command(name="create")(roles.roles_create_command)
+roles_app.command(name="list")(roles.roles_list_command)
+roles_app.command(name="get")(roles.roles_get_command)
+roles_app.command(name="update")(roles.roles_update_command)
+roles_app.command(name="delete")(roles.roles_delete_command)
+roles_app.command(name="add-permission")(roles.roles_add_permission_command)
+roles_app.command(name="remove-permission")(roles.roles_remove_permission_command)
+roles_app.command(name="init-system")(roles.roles_init_system_command)
+roles_app.command(name="assign")(roles.roles_assign_command)
+app.add_typer(roles_app, name="roles")
 
 
 @app.callback()
